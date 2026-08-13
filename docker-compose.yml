@@ -1,0 +1,14 @@
+services:
+  videoforge:
+    build: .
+    volumes:
+      - ./workspace:/workspace
+    working_dir: /workspace
+    command: ["run", "project.yml"]
+    environment:
+      HF_HOME: /workspace/.cache/huggingface
+    # Publishing credentials should be injected at runtime, never committed.
+    env_file:
+      - path: .env
+        required: false
+

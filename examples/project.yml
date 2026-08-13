@@ -1,0 +1,32 @@
+version: 1
+name: product-demo-short
+sources:
+  - assets/demo.mp4
+workspace: ./workspace/product-demo-short
+output:
+  path: ./artifacts/product-demo-short.mp4
+  width: 1080
+  height: 1920
+  fps: 30
+  video_codec: libx264
+  crf: 20
+  preset: medium
+selection:
+  target_duration: 45
+  min_scene_duration: 1.2
+  max_scene_duration: 8
+  scene_threshold: 0.32
+captions:
+  enabled: true
+  backend: faster-whisper
+  model: large-v3-turbo
+  language: zh
+  burn_in: false
+publishing:
+  enabled: false
+  platform: dry-run
+  title: 产品演示
+  description: 由 VideoForge Agent 自动剪辑，发布前已经人工审核。
+  tags: [产品, 演示]
+  privacy: private
+
