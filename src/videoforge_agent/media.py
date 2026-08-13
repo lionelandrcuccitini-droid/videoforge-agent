@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -78,7 +79,7 @@ class MediaAnalyzer:
         boundaries.append(info.duration)
         clean = sorted({round(min(max(point, 0.0), info.duration), 4) for point in boundaries})
         scenes: list[Scene] = []
-        for start, end in zip(clean, clean[1:]):
+        for start, end in pairwise(clean):
             scenes.extend(self._split_range(info, start, end, selection))
         return [scene for scene in scenes if scene.duration >= selection.min_scene_duration]
 

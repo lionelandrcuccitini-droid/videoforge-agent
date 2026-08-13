@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from videoforge_agent.errors import DependencyError, PublishError
-from videoforge_agent.models import PublishResult, PublishingConfig
+from videoforge_agent.models import PublishingConfig, PublishResult
 
 
 class WebhookPublisher:

@@ -34,7 +34,8 @@ def test_probe_parses_video_and_audio() -> None:
         ],
         "format": {"duration": "12.5"},
     }
-    analyzer = MediaAnalyzer(FakeRunner(CommandResult(json.dumps(payload), "")))  # type: ignore[arg-type]
+    runner = FakeRunner(CommandResult(json.dumps(payload), ""))
+    analyzer = MediaAnalyzer(runner)  # type: ignore[arg-type]
 
     info = analyzer.probe(Path("clip.mp4"))
 
@@ -68,4 +69,3 @@ def test_scene_detection_splits_long_ranges() -> None:
         (18, 20),
     ]
     assert all(not item.has_audio for item in scenes)
-

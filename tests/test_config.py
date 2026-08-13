@@ -32,9 +32,11 @@ output:
 
 def test_load_config_rejects_missing_sources(tmp_path: Path) -> None:
     project = tmp_path / "project.yml"
-    project.write_text("version: 1\nname: demo\nsources: [missing.mp4]\n", encoding="utf-8")
+    project.write_text(
+        "version: 1\nname: demo\nsources: [missing.mp4]\n", encoding="utf-8"
+    )
 
-    with pytest.raises(FileNotFoundError, match="missing.mp4"):
+    with pytest.raises(FileNotFoundError, match=r"missing\.mp4"):
         load_config(project)
 
 

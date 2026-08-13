@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from videoforge_agent.models import PublishResult, PublishingConfig
+from videoforge_agent.models import PublishingConfig, PublishResult
 
 
 class DryRunPublisher:
@@ -33,4 +33,3 @@ class DryRunPublisher:
             encoding="utf-8",
         )
         return PublishResult(platform=config.platform, status="dry-run", manifest=manifest)
-

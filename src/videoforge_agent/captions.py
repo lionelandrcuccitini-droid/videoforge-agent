@@ -21,7 +21,11 @@ def _timestamp(seconds: float) -> str:
 def write_srt(segments: Iterable[CaptionSegment], output: Path) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
     blocks = [
-        f"{index}\n{_timestamp(segment.start)} --> {_timestamp(segment.end)}\n{segment.text.strip()}"
+        (
+            f"{index}\n"
+            f"{_timestamp(segment.start)} --> {_timestamp(segment.end)}\n"
+            f"{segment.text.strip()}"
+        )
         for index, segment in enumerate(segments, start=1)
     ]
     output.write_text("\n\n".join(blocks) + "\n", encoding="utf-8")
@@ -45,4 +49,3 @@ class WhisperTranscriber:
             for item in raw_segments
             if str(item.text).strip()
         ]
-

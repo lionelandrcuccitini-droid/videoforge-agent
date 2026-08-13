@@ -6,6 +6,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from pydantic import ValidationError
@@ -33,9 +34,10 @@ def _version(value: bool) -> None:
 
 @app.callback()
 def main(
-    version: bool = typer.Option(
-        False, "--version", callback=_version, is_eager=True, help="Show the version."
-    ),
+    version: Annotated[
+        bool,
+        typer.Option("--version", callback=_version, is_eager=True, help="Show the version."),
+    ] = False,
 ) -> None:
     """Build repeatable video workflows from a YAML project file."""
     del version
@@ -46,7 +48,7 @@ def _progress(stage: str, message: str) -> None:
 
 
 @app.command()
-def validate(project: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
+def validate(project: Annotated[Path, typer.Argument(exists=True, dir_okay=False)]) -> None:
     """Validate a project and verify all source files."""
     try:
         config = load_config(project)
@@ -61,8 +63,8 @@ def validate(project: Path = typer.Argument(..., exists=True, dir_okay=False)) -
 
 @app.command()
 def plan(
-    project: Path = typer.Argument(..., exists=True, dir_okay=False),
-    force: bool = typer.Option(False, "--force", help="Replace an existing edit plan."),
+    project: Annotated[Path, typer.Argument(exists=True, dir_okay=False)],
+    force: Annotated[bool, typer.Option("--force", help="Replace an existing edit plan.")] = False,
 ) -> None:
     """Analyze sources and write an edit plan without rendering."""
     try:
@@ -84,13 +86,17 @@ def plan(
 
 @app.command()
 def run(
-    project: Path = typer.Argument(..., exists=True, dir_okay=False),
-    approve_publish: bool = typer.Option(
-        False,
-        "--approve-publish",
-        help="Second confirmation required before any publishing adapter runs.",
-    ),
-    no_resume: bool = typer.Option(False, help="Re-analyze and re-render every stage."),
+    project: Annotated[Path, typer.Argument(exists=True, dir_okay=False)],
+    approve_publish: Annotated[
+        bool,
+        typer.Option(
+            "--approve-publish",
+            help="Second confirmation required before any publishing adapter runs.",
+        ),
+    ] = False,
+    no_resume: Annotated[
+        bool, typer.Option(help="Re-analyze and re-render every stage.")
+    ] = False,
 ) -> None:
     """Run analysis, planning, rendering, captions, and optional publishing."""
     try:
@@ -113,7 +119,8 @@ def doctor() -> None:
     table.add_row("Python", sys.version.split()[0])
     for executable in ("ffmpeg", "ffprobe"):
         location = shutil.which(executable)
-        table.add_row(executable, f"[green]{location}[/green]" if location else "[red]missing[/red]")
+        status = f"[green]{location}[/green]" if location else "[red]missing[/red]"
+        table.add_row(executable, status)
     for module, extra in (
         ("faster_whisper", "transcribe"),
         ("googleapiclient", "youtube"),
