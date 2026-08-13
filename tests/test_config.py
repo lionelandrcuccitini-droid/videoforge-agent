@@ -38,6 +38,14 @@ def test_load_config_rejects_missing_sources(tmp_path: Path) -> None:
         load_config(project)
 
 
+def test_load_config_reports_invalid_yaml(tmp_path: Path) -> None:
+    project = tmp_path / "project.yml"
+    project.write_text("name: [unterminated\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="invalid YAML"):
+        load_config(project)
+
+
 def test_config_rejects_unknown_fields() -> None:
     with pytest.raises(ValidationError):
         ProjectConfig.model_validate(
@@ -48,4 +56,3 @@ def test_config_rejects_unknown_fields() -> None:
 def test_selection_validates_duration_order() -> None:
     with pytest.raises(ValidationError, match="max_scene_duration"):
         SelectionConfig(min_scene_duration=5, max_scene_duration=2)
-

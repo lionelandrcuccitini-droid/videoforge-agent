@@ -24,15 +24,18 @@ class WebhookPublisher:
             raise PublishError("VIDEOFORGE_WEBHOOK_URL must be an HTTPS URL")
         metadata = config.model_dump(mode="json")
         path = Path(video)
-        with path.open("rb") as stream:
-            response = httpx.post(
-                endpoint,
-                data={"metadata": json.dumps(metadata, ensure_ascii=False)},
-                files={"video": (path.name, stream, "video/mp4")},
-                timeout=600,
-                follow_redirects=False,
-            )
-        response.raise_for_status()
+        try:
+            with path.open("rb") as stream:
+                response = httpx.post(
+                    endpoint,
+                    data={"metadata": json.dumps(metadata, ensure_ascii=False)},
+                    files={"video": (path.name, stream, "video/mp4")},
+                    timeout=600,
+                    follow_redirects=False,
+                )
+            response.raise_for_status()
+        except httpx.HTTPError as exc:
+            raise PublishError(f"webhook upload failed: {exc}") from exc
         try:
             payload: dict[str, Any] = response.json()
         except ValueError:
@@ -43,4 +46,3 @@ class WebhookPublisher:
             resource_id=str(payload.get("id")) if payload.get("id") else None,
             url=str(payload.get("url")) if payload.get("url") else None,
         )
-

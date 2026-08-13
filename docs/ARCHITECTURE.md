@@ -38,6 +38,8 @@ Output video is first rendered to a hidden sibling and atomically replaced on
 success. An existing plan and final video are reused by default. `--no-resume`
 forces fresh analysis/rendering. Model and upload operations are intentionally
 outside the core render, so a network or OAuth failure cannot destroy the video.
+Use `--no-resume` after changing timeline, output, caption, or publication settings;
+resumption intentionally trusts existing checkpoints.
 
 ## Security boundaries
 

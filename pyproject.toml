@@ -74,3 +74,13 @@ select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
 python_version = "3.11"
 strict = true
 packages = ["videoforge_agent"]
+
+[[tool.mypy.overrides]]
+module = [
+  "faster_whisper.*",
+  "google.*",
+  "google_auth_oauthlib.*",
+  "googleapiclient.*",
+  "httpx.*",
+]
+ignore_missing_imports = true

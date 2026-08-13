@@ -17,7 +17,10 @@ def _resolve(base: Path, value: Path) -> Path:
 def load_config(path: Path) -> ProjectConfig:
     """Load YAML and make every media/artifact path relative to that YAML file."""
     config_path = path.resolve()
-    raw: Any = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    try:
+        raw: Any = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    except yaml.YAMLError as exc:
+        raise ValueError(f"invalid YAML in {config_path}: {exc}") from exc
     if not isinstance(raw, dict):
         raise ValueError("project config must be a YAML mapping")
     config = ProjectConfig.model_validate(raw)
@@ -35,4 +38,3 @@ def load_config(path: Path) -> ProjectConfig:
             ),
         }
     )
-
