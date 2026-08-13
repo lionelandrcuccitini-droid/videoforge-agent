@@ -9,8 +9,5 @@ def test_timestamp_handles_hours_and_rounding() -> None:
 
 
 def test_write_srt(tmp_path: Path) -> None:
-    output = write_srt(
-        [CaptionSegment(start=0, end=1.5, text=" 你好 ")], tmp_path / "captions.srt"
-    )
+    output = write_srt([CaptionSegment(start=0, end=1.5, text=" 你好 ")], tmp_path / "captions.srt")
     assert output.read_text(encoding="utf-8") == "1\n00:00:00,000 --> 00:00:01,500\n你好\n"
-

@@ -36,4 +36,3 @@ class CommandRunner:
             detail = (completed.stderr or completed.stdout)[-4000:]
             raise MediaError(f"{args[0]} failed with exit code {completed.returncode}:\n{detail}")
         return CommandResult(completed.stdout, completed.stderr)
-

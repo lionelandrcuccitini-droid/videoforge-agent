@@ -40,10 +40,7 @@ class FFmpegRenderer:
                     f"atrim=duration={clip.duration:.4f},asetpts=PTS-STARTPTS[a{index}]"
                 )
             concat_inputs.append(f"[v{index}][a{index}]")
-        filters.append(
-            "".join(concat_inputs)
-            + f"concat=n={len(plan.clips)}:v=1:a=1[vout][aout]"
-        )
+        filters.append("".join(concat_inputs) + f"concat=n={len(plan.clips)}:v=1:a=1[vout][aout]")
         args.extend(
             [
                 "-filter_complex",
@@ -103,4 +100,3 @@ class FFmpegRenderer:
         )
         os.replace(temporary, video)
         return video
-

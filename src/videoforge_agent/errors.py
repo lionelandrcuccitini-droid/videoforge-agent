@@ -19,4 +19,3 @@ class PublishError(VideoForgeError):
 
 class ApprovalRequiredError(PublishError):
     """Publishing was requested without both required approval signals."""
-

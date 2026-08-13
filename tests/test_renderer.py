@@ -39,4 +39,3 @@ def test_renderer_builds_one_concat_graph_and_replaces_atomically(tmp_path: Path
     assert "anullsrc" in graph
     assert "crop=1080:1920" in graph
     assert result.is_file()
-

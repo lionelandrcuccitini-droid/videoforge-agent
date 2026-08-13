@@ -33,8 +33,6 @@ def load_config(path: Path) -> ProjectConfig:
         update={
             "sources": resolved_sources,
             "workspace": _resolve(base, config.workspace),
-            "output": config.output.model_copy(
-                update={"path": _resolve(base, config.output.path)}
-            ),
+            "output": config.output.model_copy(update={"path": _resolve(base, config.output.path)}),
         }
     )

@@ -23,9 +23,7 @@ class YouTubePublisher:
                 "YouTube publishing requires: python -m pip install 'videoforge-agent[youtube]'"
             ) from exc
 
-        secrets = Path(
-            os.environ.get("VIDEOFORGE_YOUTUBE_CLIENT_SECRETS", "client_secret.json")
-        )
+        secrets = Path(os.environ.get("VIDEOFORGE_YOUTUBE_CLIENT_SECRETS", "client_secret.json"))
         token = Path(os.environ.get("VIDEOFORGE_YOUTUBE_TOKEN", "youtube.token.json"))
         if not secrets.is_file():
             raise PublishError(f"YouTube OAuth client secrets not found: {secrets}")

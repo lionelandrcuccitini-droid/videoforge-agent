@@ -30,4 +30,3 @@ def test_planner_trims_last_clip_and_preserves_timeline_order() -> None:
 def test_planner_rejects_empty_scene_list() -> None:
     with pytest.raises(ValueError, match="no scenes"):
         TimelinePlanner().create(config(), [])
-

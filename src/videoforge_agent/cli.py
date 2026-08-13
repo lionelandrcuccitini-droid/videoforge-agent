@@ -94,9 +94,7 @@ def run(
             help="Second confirmation required before any publishing adapter runs.",
         ),
     ] = False,
-    no_resume: Annotated[
-        bool, typer.Option(help="Re-analyze and re-render every stage.")
-    ] = False,
+    no_resume: Annotated[bool, typer.Option(help="Re-analyze and re-render every stage.")] = False,
 ) -> None:
     """Run analysis, planning, rendering, captions, and optional publishing."""
     try:

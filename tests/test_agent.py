@@ -69,8 +69,9 @@ def test_agent_requires_second_publish_approval_after_render(tmp_path: Path) -> 
     renderer.render.side_effect = lambda plan, output: output.path.touch() or output.path
     agent = VideoForgeAgent(analyzer=analyzer, renderer=renderer)
 
-    with patch.object(agent, "_check_dependencies"), pytest.raises(
-        ApprovalRequiredError, match="--approve-publish"
+    with (
+        patch.object(agent, "_check_dependencies"),
+        pytest.raises(ApprovalRequiredError, match="--approve-publish"),
     ):
         agent.run(config)
 
@@ -92,9 +93,10 @@ def test_agent_checkpoints_publication_to_prevent_duplicate_uploads(tmp_path: Pa
     publisher = DryRunPublisher(config.workspace)
     agent = VideoForgeAgent(analyzer=analyzer, renderer=renderer)
 
-    with patch.object(agent, "_check_dependencies"), patch(
-        "videoforge_agent.agent.create_publisher", return_value=publisher
-    ) as factory:
+    with (
+        patch.object(agent, "_check_dependencies"),
+        patch("videoforge_agent.agent.create_publisher", return_value=publisher) as factory,
+    ):
         first = agent.run(config, approve_publish=True)
         second = agent.run(config, approve_publish=False)
 

@@ -136,4 +136,3 @@ class RunResult(StrictModel):
     video: Path
     captions: Path | None = None
     publication: PublishResult | None = None
-

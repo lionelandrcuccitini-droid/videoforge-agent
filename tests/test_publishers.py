@@ -20,4 +20,3 @@ def test_dry_run_writes_manifest_without_network(tmp_path: Path) -> None:
 def test_publisher_factory_defaults_to_dry_run(tmp_path: Path) -> None:
     publisher = create_publisher(PublishingConfig(), tmp_path)
     assert isinstance(publisher, DryRunPublisher)
-

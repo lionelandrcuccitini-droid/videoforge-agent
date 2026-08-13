@@ -98,9 +98,7 @@ class VideoForgeAgent:
                 )
 
         self.progress("done", str(video))
-        return RunResult(
-            plan=plan_path, video=video, captions=captions, publication=publication
-        )
+        return RunResult(plan=plan_path, video=video, captions=captions, publication=publication)
 
     def _analyze(self, config: ProjectConfig) -> list[Scene]:
         scenes: list[Scene] = []
