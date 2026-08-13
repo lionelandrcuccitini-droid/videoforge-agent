@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from videoforge_agent.agent import VideoForgeAgent
-from videoforge_agent.errors import ApprovalRequiredError
+from videoforge_agent.errors import ApprovalRequiredError, DependencyError
 from videoforge_agent.models import (
     MediaInfo,
     OutputConfig,
@@ -104,3 +104,10 @@ def test_agent_checkpoints_publication_to_prevent_duplicate_uploads(tmp_path: Pa
     assert second.publication == first.publication
     assert (config.workspace / "publication.json").is_file()
     factory.assert_called_once()
+
+
+def test_agent_reports_missing_ffmpeg() -> None:
+    with patch("videoforge_agent.agent.shutil.which", return_value=None), pytest.raises(
+        DependencyError, match="ffmpeg"
+    ):
+        VideoForgeAgent._check_dependencies()

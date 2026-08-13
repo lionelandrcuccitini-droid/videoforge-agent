@@ -39,3 +39,18 @@ def test_renderer_builds_one_concat_graph_and_replaces_atomically(tmp_path: Path
     assert "anullsrc" in graph
     assert "crop=1080:1920" in graph
     assert result.is_file()
+
+
+def test_renderer_burns_captions_and_replaces_video(tmp_path: Path) -> None:
+    runner = RecordingRunner()
+    renderer = FFmpegRenderer(runner)  # type: ignore[arg-type]
+    video = tmp_path / "video.mp4"
+    captions = tmp_path / "captions.srt"
+    video.touch()
+    captions.write_text("captions", encoding="utf-8")
+
+    result = renderer.burn_captions(video, captions)
+
+    assert result == video
+    assert "subtitles=filename=" in runner.args[runner.args.index("-vf") + 1]
+    assert video.is_file()
