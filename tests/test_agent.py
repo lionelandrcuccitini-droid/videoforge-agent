@@ -107,7 +107,8 @@ def test_agent_checkpoints_publication_to_prevent_duplicate_uploads(tmp_path: Pa
 
 
 def test_agent_reports_missing_ffmpeg() -> None:
-    with patch("videoforge_agent.agent.shutil.which", return_value=None), pytest.raises(
-        DependencyError, match="ffmpeg"
+    with (
+        patch("videoforge_agent.agent.shutil.which", return_value=None),
+        pytest.raises(DependencyError, match="ffmpeg"),
     ):
         VideoForgeAgent._check_dependencies()
