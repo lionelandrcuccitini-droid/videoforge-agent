@@ -53,7 +53,7 @@ class YouTubePublisher:
         request = service.videos().insert(
             part="snippet,status",
             body=body,
-            media_body=MediaFileUpload(video, chunksize=-1, resumable=True),
+            media_body=MediaFileUpload(video, chunksize=8 * 1024 * 1024, resumable=True),
         )
         response = None
         while response is None:
@@ -65,4 +65,3 @@ class YouTubePublisher:
             resource_id=video_id,
             url=f"https://www.youtube.com/watch?v={video_id}",
         )
-

@@ -10,7 +10,7 @@ from pathlib import Path
 from videoforge_agent.captions import WhisperTranscriber, write_srt
 from videoforge_agent.errors import ApprovalRequiredError, DependencyError
 from videoforge_agent.media import MediaAnalyzer
-from videoforge_agent.models import EditPlan, ProjectConfig, RunResult, Scene
+from videoforge_agent.models import EditPlan, ProjectConfig, PublishResult, RunResult, Scene
 from videoforge_agent.planner import TimelinePlanner
 from videoforge_agent.publishers import create_publisher
 from videoforge_agent.renderer import FFmpegRenderer
@@ -78,13 +78,24 @@ class VideoForgeAgent:
 
         publication = None
         if config.publishing.enabled:
-            if not approve_publish:
+            publication_path = config.workspace / "publication.json"
+            if resume and publication_path.is_file():
+                self.progress("publish", f"reusing {publication_path}")
+                publication = PublishResult.model_validate_json(
+                    publication_path.read_text(encoding="utf-8")
+                )
+            elif not approve_publish:
                 raise ApprovalRequiredError(
                     "render completed, but publishing needs the explicit --approve-publish flag"
                 )
-            self.progress("publish", f"publishing through {config.publishing.platform}")
-            publisher = create_publisher(config.publishing, config.workspace)
-            publication = publisher.publish(str(video), config.publishing)
+            else:
+                self.progress("publish", f"publishing through {config.publishing.platform}")
+                publisher = create_publisher(config.publishing, config.workspace)
+                publication = publisher.publish(str(video), config.publishing)
+                publication_path.write_text(
+                    publication.model_dump_json(indent=2, exclude_none=True) + "\n",
+                    encoding="utf-8",
+                )
 
         self.progress("done", str(video))
         return RunResult(
@@ -123,4 +134,3 @@ class VideoForgeAgent:
                 + ", ".join(missing)
                 + ". Install FFmpeg or use the provided Docker image."
             )
-

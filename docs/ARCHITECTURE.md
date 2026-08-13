@@ -26,6 +26,7 @@ Every run writes its intermediate artifacts under `workspace`:
 - `edit-plan.json`: selected clips and output geometry;
 - `captions.srt`: optional transcription;
 - `publication.preview.json`: dry-run publication request.
+- `publication.json`: successful publication checkpoint, preventing duplicate uploads on resume.
 
 The plan uses absolute source paths after configuration resolution. This favors
 reliable local resumption; a future remote worker protocol should rewrite these to
@@ -50,4 +51,3 @@ outside the core render, so a network or OAuth failure cannot destroy the video.
 Do not expose this CLI directly as a multi-tenant web service without adding media
 size limits, path sandboxing, job isolation, quotas, SSRF controls, and malware/content
 screening.
-

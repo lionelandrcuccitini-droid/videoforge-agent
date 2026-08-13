@@ -13,6 +13,7 @@ VideoForge Agent 是一个 **FFmpeg-first、可审阅、可恢复** 的自动视
 - **声明式剪辑计划**：先生成 `edit-plan.json`，人或上层 LLM 可以审阅、重排、修改，再交给确定性的渲染器。
 - **FFmpeg 直接渲染**：避免逐帧搬运带来的额外开销；一个 filter graph 完成裁切、缩放、补静音和拼接。
 - **可恢复阶段**：分析结果、场景列表、剪辑计划和字幕均持久化；中断后默认复用已有产物。
+- **发布幂等检查点**：成功发布会写入 `publication.json`，恢复运行不会重复上传。
 - **发布双重批准**：配置中的 `publishing.enabled: true` 之外，还必须传 `--approve-publish`；默认适配器只写 dry-run 清单。
 - **模型可选**：基础剪辑只需要 FFmpeg；本地字幕才安装 `faster-whisper` 和模型，避免强制下载数 GB 权重。
 

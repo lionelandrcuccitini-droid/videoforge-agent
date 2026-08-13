@@ -77,7 +77,7 @@ def plan(
         edit_plan = agent.planner.create(config, agent._analyze(config))
         plan_path.write_text(edit_plan.model_dump_json(indent=2) + "\n", encoding="utf-8")
         console.print(f"[green]Plan ready:[/green] {plan_path}")
-    except VideoForgeError as exc:
+    except (OSError, ValueError, ValidationError, VideoForgeError) as exc:
         console.print(f"[bold red]Planning failed:[/bold red] {exc}")
         raise typer.Exit(code=1) from exc
 

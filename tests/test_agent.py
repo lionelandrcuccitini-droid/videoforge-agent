@@ -13,6 +13,7 @@ from videoforge_agent.models import (
     Scene,
     SelectionConfig,
 )
+from videoforge_agent.publishers.dry_run import DryRunPublisher
 
 
 def make_config(tmp_path: Path, *, publishing: bool = False) -> ProjectConfig:
@@ -75,3 +76,29 @@ def test_agent_requires_second_publish_approval_after_render(tmp_path: Path) -> 
 
     assert config.output.path.is_file()
 
+
+def test_agent_checkpoints_publication_to_prevent_duplicate_uploads(tmp_path: Path) -> None:
+    config = make_config(tmp_path, publishing=True)
+    info = MediaInfo(
+        path=config.sources[0], duration=2, width=10, height=10, fps=30, has_audio=True
+    )
+    analyzer = Mock()
+    analyzer.probe.return_value = info
+    analyzer.detect_scenes.return_value = [
+        Scene(source=config.sources[0], start=0, end=2, has_audio=True)
+    ]
+    renderer = Mock()
+    renderer.render.side_effect = lambda plan, output: output.path.touch() or output.path
+    publisher = DryRunPublisher(config.workspace)
+    agent = VideoForgeAgent(analyzer=analyzer, renderer=renderer)
+
+    with patch.object(agent, "_check_dependencies"), patch(
+        "videoforge_agent.agent.create_publisher", return_value=publisher
+    ) as factory:
+        first = agent.run(config, approve_publish=True)
+        second = agent.run(config, approve_publish=False)
+
+    assert first.publication is not None
+    assert second.publication == first.publication
+    assert (config.workspace / "publication.json").is_file()
+    factory.assert_called_once()
